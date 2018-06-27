@@ -1,20 +1,21 @@
 SugarCube
 =========
 
-Some sugar for your [cocoa](http://rubymotion.com), or your [tea][sweettea].
+[![Join the chat at https://gitter.im/rubymotion/sugarcube](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rubymotion/sugarcube?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Build Status](https://travis-ci.org/rubymotion/sugarcube.png)](https://travis-ci.org/rubymotion/sugarcube)
+[![Build Status](https://travis-ci.org/rubymotion/sugarcube.svg?branch=master)](https://travis-ci.org/rubymotion/sugarcube)
+[![Version](https://badge.fury.io/rb/sugarcube.svg)](https://rubygems.org/gems/sugarcube)
 
 About
 -----
 
-CocoaTouch/iOS is a *verbose* framework.  These extensions hope to make
+Cocoa and CocoaTouch are *verbose* frameworks.  These extensions hope to make
 development in rubymotion more enjoyable. With SugarCube, you can create a color
 from an integer or symbol, or create a UIFont or UIImage from a string.
 
-Some core classes are opened up as well, like adding the '<<' operator to a
+Many core classes are opened up as well, like adding the '<<' operator to a
 UIView instance, instead of view.addSubview(subview), you can use the more
-idiomatic: view << subview.
+idiomatic: `view << subview`.
 
 The basic idea of SugarCube is to turn operations on their head.  So instead of:
 
@@ -34,11 +35,14 @@ Cocoa-wrappage.
 
 **CONTRIBUTIONS**
 
-SugarCube started out as a [Fusionbox][] project (see the
-[announcement][fusionbox announcement]), but as its popularity increased, the
-decision was made to offer it to the rubymotion community, in the spirit of
-open-source and collaboration.  It is a great complement to [teacup][],
-especially when paired with [sweettea][]!
+SugarCube is the result of the hard work of many developers, but it’s mostly
+maintained by [Colin Gray][colinta], with help from members of the RubyMotion
+community.  If you have an idea, please open a pull request so we can discuss
+it!  All PRs must be submitted with specs.
+
+If you use SugarCube on your projects, please consider donating a small amount
+via [gratipay.com](https://gratipay.com/colinta), or better yet: fork the
+project, add some specs, and improve the quality of this super-handy gem!
 
 Documentation
 =============
@@ -49,6 +53,15 @@ diligent about adding Yard documentation, which is available here:
 <http://rubydoc.info/gems/sugarcube/latest>
 
 [documentation]: http://rubydoc.info/gems/sugarcube/latest
+
+Versioning
+==========
+
+SugarCube uses FerVer: https://github.com/jonathanong/ferver.  This means that
+minor breaking changes occur in minor version bumps, and sometimes a
+non-breaking change occures in the major version (like when we added OS X
+support).
+
 
 Installation
 ============
@@ -81,20 +94,34 @@ written so that it does *not* pollute any classes by default.  So if all you do
 is `require "sugarcube"`, you are NOT going to get much mileage!
 
 In the installation code above, I show the example of using `:require => 'sugarcube-all'`
-to include *all* of SugarCube's extensions.  Usually you will require the
-packages you need from your Rakefile:
+to include *all* of SugarCube's extensions.  You can, alternatively require just
+the packages you need:
+
+###### Gemfile
+```ruby
+gem 'sugarcube', :require => [
+  'sugarcube-ui',
+  'sugarcube-events',
+  'sugarcube-gestures',
+  'sugarcube-568',
+  'sugarcube-attributedstring',
+]
+```
+
+Or, from your Rakefile:
 
 ```ruby
 $:.unshift('/Library/RubyMotion/lib')
 require 'motion/project/template/ios'
+
 require 'bundler'
 Bundler.require
-require './lib/sugarcube-uikit'
-require './lib/sugarcube-events'
-require './lib/sugarcube-gestures'
-require './lib/sugarcube-568'
-require './lib/sugarcube-attributedstring'
-# ...
+
+require 'sugarcube-ui'
+require 'sugarcube-events'
+require 'sugarcube-gestures'
+require 'sugarcube-568'
+require 'sugarcube-attributedstring'
 ```
 
 You can require the packages in piecemeal like this, or you can require a group
@@ -116,7 +143,7 @@ REPL ([wiki][REPL Wiki])
 ----
 
 If you install SugarCube and *only* use the REPL package, you will benefit from
-some of its greatest tools!
+some of SugarCube's greatest tricks!
 
 > `require 'sugarcube-repl'`
 
@@ -124,9 +151,12 @@ This package is useful during development because it adds methods to the REPL
 that make adjusting and introspecting views much easier.  You'll get a lot more
 done in the REPL with these additions.
 
+You should NEVER use these methods in your application, because this package is
+only included in 'development' mode.  That means if you hard-code a call to
+'tree' in your code, that will crash when you go to release your app.  YIKES.
+
 To keep this document lean-and-mean, I've put most of the REPL documentation [in
-the wiki][REPL Wiki], but a
-quick overview:
+the wiki][REPL Wiki], but here's a quick overview:
 
 * Use the `tree` commands to output your view hierarchy.  It can accept a UIView,
   `UIViewController`, or `CALayer` object as the root object, or it defaults to
@@ -157,29 +187,62 @@ quick overview:
   > w 15
   ```
 
+* Changed your mind? undo all adjustments to the object currently selected:
+
+  ```
+  > restore
+  ```
+
+
+* Which element in the tree did I select with adjust? You can make the object selected flash in the simulator:
+
+
+  ```
+  > blink
+  ```
+
+
 Be sure to read more in the [REPL Additions][REPL Wiki] Wiki page.
 
 [REPL Wiki]: https://github.com/rubymotion/sugarcube/wiki/REPL-Additions
 
-UIKit ([wiki][UIKit Wiki])
+UI on iOS: UIKit extensions ([wiki][UIKit Wiki])
 -----
 
 A big package chock full of methods to make working in UIKit a joy.
 
-> `require 'sugarcube-uikit'`
+> `require 'sugarcube-ui'`
 
 A few varieties of methods are in this package:
 
-* Conversions: `'string-to'.uiimage`, `image.uiimageview`
+* Conversions: `'string-to'.uiimage`, `image.uiimageview`, `'string-to'.uilabel(font)`
 * Helpers: shorthands for common operations, like `a_view << a_subview`, `a_subview.convert_frame_to(a_view)`
 * Symbols: `:system.uifont(20)`, `:label.uifontsize`
-* Frame accessors: `a_view.x`, `a_view.x = 100`
+* Frame accessors: `a_view.x`, `a_view.x = 100` (on `UIView` and `CALayer`)
 
 There are too many methods to define here. Instead: a complete list of methods
 is available in the [documentation][], and the [wiki page][UIKit Wiki] is a
 great source as well.
 
 [UIKit Wiki]: https://github.com/rubymotion/sugarcube/wiki/UIKit
+
+UI on OS X: AppKit extensions
+-----
+
+Similar extensions as the iOS version, but using the `ns` prefix on method names:
+
+* Conversions: `'string-to'.nsimage`, `image.nsimageview`, `'string-to'.nslabel(font)`
+* Helpers: `view << subview`
+* Symbols: `:white.nscolor`, `:system.nsfont`
+* Frame accessors: `a_view.x`, `a_view.x = 100` (on `UIView`, `CALayer`, `NSWindow`, and `NSScreen`)
+
+UI on Android
+-----
+
+*(warning: extending built-in classes is not reliable in RubyMotion on Android)*
+
+ViewGroup gets the same `<<` method that you see in UIView and NSView.
+
 
 Constants
 -----
@@ -191,7 +254,7 @@ write these as symbols instead of UILongConstantNames.  This package adds
 methods to `Symbol`s to convert them into a UIKit or Foundation constant.
 
 ```ruby
-:center.uialignment  # => UITextAlignmentCenter
+:center.nsalignment  # => NSTextAlignmentCenter (formerly UITextAlignmentCenter)
 :upside_down.uiorientation  # => UIDeviceOrientationPortraitUpsideDown
 :rounded.uibuttontype  # => UIButtonTypeRoundedRect
 :highlighted.uicontrolstate  # => UIControlStateHighlighted
@@ -297,7 +360,7 @@ button.on(:touch_up_outside, :touch_cancel) { |event|
 
 # remove handlers
 button.off(:touch, :touch_up_outside, :touch_cancel)
-button.off(:all)
+button.off # all events
 ```
 
 You can only remove handlers by "type", not by the action.  e.g. If you bind
@@ -356,7 +419,7 @@ the prefix is "on" instead of "when" (e.g. "on_pan" instead of "when_panned")
 
 ```ruby
 view.on_pan do |gesture|
-  location = gesture.view.locationInView(view)
+  location = gesture.locationInView(view)
 end
 
 # other gesture methods, with common options:
@@ -377,6 +440,9 @@ view.on_pan(2)  # minimum and maximum fingers required
 view.on_pan(fingers: 2)
 view.on_pan(min_fingers: 2, max_fingers: 3)
 
+# If present, overrides fingers options and instead handles gestures originating at specified screen edges (UIScreenEdgePanGestureRecognizer)
+view.on_pan(edges: [<list>]) #  Some combination of [:left, :right, :top, :bottom, :all]. 
+
 # `on_press` is a continuous event (it uses UILongPressGestureRecognizer), so
 # you need to check the `gesture`:
 view.on_press do |gesture|
@@ -390,6 +456,9 @@ view.on_press(duration: 1.5, taps: 1, fingers: 1)
 # this version is only fired when the long-press begins; this is *probably* more
 # useful to you:
 view.on_press_begin do ... end
+
+# or, when the gesture ends:
+view.on_press_ended do ... end
 ```
 
 Notifications
@@ -440,6 +509,8 @@ image.in_rect([[10, 10], [100, 100]])  # get part of an image
 
 image.darken  # => good for "pressed" buttons
 image.darken(brightness: -0.5, saturation: -0.2)  # these are the defaults
+image.gaussian_blur(radius: 5)
+image.inverted
 
 image.rotate(:left)
 image.rotate(:right)
@@ -490,7 +561,7 @@ image.draw do |context|
 end
 
 # size
-image = Image.canvas(size: [10, 20])
+image = UIImage.canvas(size: [10, 20])
 image.width  # => 10
 image.height  # => 20
 ```
@@ -607,28 +678,62 @@ Factories
 ###### UIAlertView
 
 Accepts multiple buttons and handlers.  In its simplest form, you can pass just
-a title and block.
+a title and block.  An optional `:message` can either be passed in as an option,
+or as the 2nd positional arg.
+
+Options:
+
+    UIAlertView.alert(options)
+    UIAlertView.alert(title, options)
+    UIAlertView.alert(title, message, options)
+    0 => title => String - title of the alert.  optional positional arg.
+    1 => message => String - message of the alert.  optional positional arg.
+    :title => String - title of the alert.
+    :message => String - message of the alert.
+    :success => Proc - the success handler
+    :cancel => Proc - the cancel handler
+    :buttons => [] - List of buttons ([cancel, others...])
+    :buttons => {} - Hash of buttons ({cancel:, others: ...}) in any order of course
+    :style => Symbol | Fixnum - A symbol (uialertstyle) or constant (UIAlertViewStyle*)
+    :show => Boolean - Whether to show the action sheet (default: true)
 
 ```ruby
-# simple
-UIAlertView.alert "This is happening, OK?" { self.happened! }
+# simple title/message alert
+UIAlertView.alert('This is happening, OK?', 'An optional message') do
+  self.it_happened!
+end
 
 # a little more complex - the cancel button should be first, and the block will
-# receive a string, not an index
-UIAlertView.alert("This is happening, OK?", buttons: ["Nevermind", "OK"],
-  message: "Don't worry, it'll be fine.") { |button|
-  if button == "OK"
+# receive a string and an index
+UIAlertView.alert('This is happening, OK?',
+  message: 'Don\'t worry, it\'ll be fine.',
+  buttons: ['Nevermind', 'OK'],
+  ) do |button, button_index|
+  if button == 'OK'  # or: button_index == 1
     self.happened!
   end
-}
+end
 
 # Full on whiz-bangery.  The cancel button should be the first entry in
 # `buttons:`.  When you specify the success and cancel button handlers this way,
 # you need not assign both.
-UIAlertView.alert "I mean, is this cool?", buttons: %w[No! Sure! Hmmmm],
-  message: "No going back now",
+UIAlertView.alert('I mean, is this cool?',
+  buttons: ['No!', 'Sure!', 'Hmmmm'],
+  message: 'No going back now',
   cancel: proc { self.cancel },
-  success: proc { |pressed| self.proceed if pressed == "Sure!" }
+  success: proc { |pressed| self.proceed if pressed == 'Sure!' }
+  )
+
+# To keep up with BubbleWrap's awesome BW::ActionSheet and BW::AlertView
+# helpers, SugarCube provides a similar interface.
+UIAlertView.alert('Confirm action!', 'Are you sure you want to do this?',
+  buttons: {
+    cancel: 'No!',
+    success: 'Sure!',
+    unsure: 'Hmmm',
+  }) do |button|
+  # button will be :cancel, :success or :unsure
+end
 ```
 
 ###### UIActionSheet
@@ -641,15 +746,37 @@ If you use an array of buttons (which you probably *should*), the order of
 arguments is `[:cancel, :destructive, :others, ...]`.  If you *dont* want a
 cancel or destructive button, pass `nil` in place.
 
+Options:
+
+    UIActionSheet.alert(options)
+    UIActionSheet.alert(title, options)
+    0 => title => String - title of the action sheet
+    :title => Proc - title of the action sheet
+    :success => Proc - the success handler
+    :cancel => Proc - the cancel handler
+    :destructive => Proc - the destructive handler
+    :buttons => [] - List of buttons ([cancel, destructive, others...])
+    :buttons => {} - Hash of buttons ({cancel:, destructive:, others: ...}) in any order of course
+    :style => Symbol | Fixnum - A symbol (uiactionstyle) or constant (UIActionSheetStyle*)
+    :show => Boolean - Whether to show the action sheet (default: true)
+    :from => CGRect | UIBarButtonItem | UIToolbar | UITabBar | UIView (default: first window)
+             Where to display the alert.  Mostly relevant on iPad.
+    :view => UIView (default: first window)
+             The view to display the alert when used with :from => CGRect
+
 ```ruby
 # simple
-UIActionSheet.alert 'This is happening, OK?' { self.happened! }
-# a little more complex, with cancel and destructive buttons
-UIActionSheet.alert('This is happening, OK?', buttons: ['Sure!', 'OK']
-  ) {
+UIActionSheet.alert 'This is happening, OK?' do
   self.happened!
-}
+end
 
+# a little more complex, with cancel and destructive buttons
+UIActionSheet.alert('This is happening, OK?', buttons: ['Cancel', 'Kill it!', 'Uh, what?']
+  ) do |button|
+  # button is 'Cancel', 'Kill it!' or 'Uh, what?'
+end
+
+# skip cancel and destructive buttons:
 UIActionSheet.alert('Should I?', buttons: [nil, nil, 'OK', 'Nevermind']) { |pressed|
   self.do_it if pressed == 'OK'
 }
@@ -658,6 +785,45 @@ UIActionSheet.alert 'I mean, is this cool?', buttons: ['Nah', 'With fire!', 'Sur
   cancel: proc { self.cancel },
   destructive: proc { self.kill_it_with_fire }
   success: proc { |pressed| self.proceed if pressed == 'Sure' }
+
+# By passing a Hash to buttons you can get this improved interface, similar to
+# BubbleWrap's awesome interface.
+UIActionSheet.alert('Well, how bout it?',
+  buttons: {
+    cancel: 'Cancel',
+    destructive: 'Kill it with fire!',
+    help: 'Tell me more'
+  }) do |button|
+  # button is :cancel, :destructive or :help
+end
+```
+
+###### UIAlertController
+
+Starting with iOS 8.0, UIActionSheet and UIAlertView are deprecated and replaced by UIAlertController.
+
+This is very similar to `UIAlertView.alert` and `UIActionSheet.alert` but you have to pass a `UIViewController` as first argument.
+
+Options:
+
+    UIAlertController.alert(controller, options)
+    UIAlertController.alert(controller, title, options)
+    0 => title => String - title of the action sheet
+    :title => Title of the alert sheet
+    :buttons => [] - List of buttons ([cancel, destructive, others...])
+    :style => Symbol | Fixnum - A symbol (uialertcontrollerstyle) or constant (UIAlertControllerStyle*)
+    :show => Boolean - Whether to show the alert controller (default: true)
+    :from => CGRect | UIBarButtonItem | UIView (default: first window)
+             Where to display the alert.  Mostly relevant on iPad.
+    :view => UIView (default: first window)
+             The view to display the alert when used with :from => CGRect
+
+```ruby
+# simple
+UIAlertController.alert(self, 'This is happening, OK?', buttons: ['Cancel', 'Kill it!', 'Uh, what?']
+  ) do |button|
+  # button is 'Cancel', 'Kill it!' or 'Uh, what?'
+end
 ```
 
 ###### UIButton
@@ -666,6 +832,7 @@ UIButton.buttonWithType(:custom.uibuttontype)
 # =>
 UIButton.custom
 
+# many of these are obsolete since iOS 7
 UIButton.custom            => UIButton.buttonWithType(:custom.uibuttontype)
 UIButton.rounded           => UIButton.buttonWithType(:rounded.uibuttontype)
 UIButton.rounded_rect      => UIButton.buttonWithType(:rounded_rect.uibuttontype)
@@ -811,6 +978,7 @@ UIBarButtonItem.alloc.initWithImage('portrait'.uiimage, landscapeImagePhone:'lan
 ```
 
 Example Usage:
+
 ```ruby
 toolbar = UIToolbar.new
 toolbar.items = [
@@ -847,12 +1015,30 @@ UITabBarItem.system(:top_rated, tag: MY_ITEM_TAG, badge: 'hi')
 ```
 
 ###### NSError
+
+> **WARNING:** Breaking change in 3.3.0, this method name *was* `new`, but that
+> caused conflicts with a bunch of 3rd party CocoaPods.
+
 ```ruby
-# usually, NSError.new doesn't work, because the only initializer for NSError
+# usually, NSError.error doesn't work, because the only initializer for NSError
 # needs more arguments.  This method passes some defaults in.
-NSError.new('message')
+NSError.error('message')
 # same as =>
-NSError.new('message', domain: 'Error', code: 0, userInfo: {})
+NSError.error('message', domain: 'Error', code: 0, userInfo: {})
+```
+
+###### UILabel
+
+> **WARNING:** Breaking change in 3.3.0, this method name *was* `new`, but that
+> caused conflicts with a bunch of 3rd party CocoaPods.
+
+```ruby
+# supports text, font, and font size
+UILabel.label('label text')
+UILabel.label('label text'.attrd)  # detects attributed strings, too
+UILabel.label('label text', 'Font name')  # You can pass just a font name
+UILabel.label('label text', UIFont.fontWithName('Font name', size: 20))  # Or a UIFont object
+UILabel.label('label text', 'Font name', 20)  # Or the name *and* the size
 ```
 
 Animations ([wiki][Animations Wiki])
@@ -875,6 +1061,11 @@ view.shake  # great for showing invalid form elements
 view.tumble  # great way to dismiss an alert-like-view
 # tumbles in the other direction (towards the right side instead of left)
 view.tumble(side: :right)
+# wow, this is a SuperGoodDeleteWiggle! https://github.com/mxcl/SuperGoodDeleteWiggle
+view.wiggle
+view.dont_wiggle
+# if you modify the AppDelegate to load the WiggleAnimationController you can
+# see an example of this animation in action.
 
 # the complement to 'tumble' is 'tumble_in' - the view starts above the window
 # and drops in with the same kind of animation as 'tumble'.  Before you call
@@ -1048,6 +1239,17 @@ distance = 2.miles  # => 3218.688, that's how many meters are in 2 miles
 1500.in_miles  # converts meters to miles => 0.932056427001953
 ```
 
+### Time
+
+By now you have probably "gotten it" and are hooked on these number helpers.
+Heads up, though, some of these conflict with MotionSupport's definition.
+
+```ruby
+1.second * 5.per_second = 5
+1.day * 3.per_hour = 72
+1.year.in_minutes = 525960.0
+```
+
 ### Sizes
 
 Similar conversion methods for hard disk sizes.  Uses the "mebi-byte" concepts,
@@ -1100,10 +1302,21 @@ issues with missing constants).
 
 # And there's where it gets FUN:
 ('This'.italic + ' is going to be ' + 'FUN'.bold).underline
+
+# and if you need to join a bunch of strings, there's a helper for that!
+['This', 'is'.bold, 'handy!'].join_attrd(' ')
+# or join plain strings with an attributed string:
+['a', 'b', 'c'].join_attrd('-'.bold)
+# join_attrd will *always* return an NSAttributedString
+['a', 'b', 'c'].join_attrd(' ')  # == NSAttributedString ('a b c')
+
+# You can even generate attributed text from html!  This feature uses the
+# NSHTMLTextDocumentType option to convert the html to NSAttributedString
+'Why on <b>earth<b> would you want to do <em>that</em>?'.attributed_html
 ```
 
 And you can easily turn an attributed string into a label, if you include the
-`sugarcube-uikit` package.
+`sugarcube-ui` package.
 
 ```ruby
 view << (("We just met\n".attrd +
@@ -1134,8 +1347,8 @@ some problems with on RubyMotion (it worked, but not *always*.  Very strange).
 Files
 -----
 
-Methods to find document files, resource files, cache files, temporary files, and to access
-entries out of the Info.plist file.
+Methods to find document files, resource files, cache files, temporary files, access
+entries out of the Info.plist file, and write data/arrays/dictionaries to a file.
 
 > `require 'sugarcube-files'`
 
@@ -1160,6 +1373,50 @@ entries out of the Info.plist file.
 
 # access data from Info.plist
 "CFBundleVersion".info_plist  # => NSBundle.mainBundle.infoDictionary["CFBundleVersion"]
+
+# write to file
+[].write_to('array.plist'.document_path)
+array = NSArray.read_from('array.plist'.resource_path)
+
+{}.write_to('dict.plist'.document_path)
+dict = NSDictionary.read_from('dict.plist'.resource_path)
+
+data = UIImagePNGRepresentation('some_image'.uiimage)
+# using sugarcube-nsdata:
+# data = 'some_image'.uiimage.nsdata
+data.write_to('some_image.png'.document_path)
+image_data = NSData.read_from('some_image.png'.document_path)
+```
+
+SpriteKit
+-----
+
+```ruby
+node_a = SKNode.node
+node_a.name = 'parent'
+
+node_b = SKNode.node
+node_b.name = 'child'
+node_c = SKNode.node
+node_c.name = 'child'
+
+# add child nodes
+node_a << node_b
+node_a << node_c
+
+# set user data
+node_a[:life] = 100
+
+# enumerate child nodes
+node_a.each_named('child') do |node, stop_ptr|
+  if node == node_b
+    stop_ptr.value = true
+  end
+end
+
+node_a.run_action(SKAction.fadeOut) do
+  # done fading out
+end
 ```
 
 Localized
@@ -1188,17 +1445,29 @@ Shorthands and hash-like access to the coder/decoder objects.
 ```ruby
 # hash access is the handiest
 coder['key'] = self.value
-self.value = decoder['key']
+@value = decoder['key']
+
+if decoder.key?('key')
+  value = decoder['key']
+end
 
 # but if you want to store booleans and such (in their C form,
 # which will take up less space):
 coder.set('sugarcube_is_neat', toBool: self.sugarcube_is_neat?)
-self.sugarcube_is_neat = decoder.bool('sugarcube_is_neat')
+@sugarcube_is_neat = decoder.bool('sugarcube_is_neat')
 
 coder.set('number_of_things', toInt:self.number_of_things)
-self.number_of_things = decoder.int('number_of_things')
+@number_of_things = decoder.int('number_of_things')
 
-# the entire list:
+# Archiving and unarchiving is straightforward
+# archiving uses NSKeyedArchiver
+NSCoder.archive(root_object)  # returns NSData
+NSCoder.archive(root_object, to_file: 'foo'.document_path)  # returns success boolean
+# unarchiving uses NSKeyedUnarchiver
+NSCoder.unarchive(data)
+NSCoder.unarchive('foo'.document_path)
+
+# the entire list of encode/decode helpers:
 coder.set(key, toBool:value)
 coder.set(key, toDouble:value)
 coder.set(key, toFloat:value)
@@ -1358,8 +1627,7 @@ NSUserDefaults['test'] = test  # saved
 CoreGraphics
 --------------
 
-*This package is installed automatically, because so many other packages depend
-on it. It does not add any methods to built-in classes.*
+*This package is included by a few of the other packages, like repl, animations, and image.*
 
 ###### Is it `CGMakeRect` or `CGRectMake`?  What arguments does `CGRect.new` take?
 
@@ -1396,6 +1664,36 @@ f = Rect(p, s)
 # any combination of point/array and size/array
 f = Rect(p, [w, h])
 f = Rect([x, y], s)
+```
+
+Base64
+------
+
+> `require 'sugarcube-base64'`
+
+**Todo: add UIImage/NSImage support**
+**Todo: add Android support?**
+
+Uses the `NSData#base64EncodedStringWithOptions` and
+`NSData#initWithBase64EncodedData` methods to encode/decode base64 data.  Normal
+use is to convert your image/binary data into an `NSData` instance, and then
+call `to_base64` on that object.
+
+There is a helper on `NSString`, so you can convert an `NSString` instance
+directly to base-64, using UTF8 encoding (or any encoding Apple supports).
+
+```ruby
+base64_str = 'test string'.to_base64
+...
+NSString.from_base64(base64_str) == 'test string'
+
+# require 'sugarcube-nsdata'
+image = 'some_image'.uiimage
+data = image.nsdata  # defaults to PNG data
+base64_str = data.to_base64
+...
+data = NSData.from_base64(base64_str)
+image = data.uiimage  # defaults to reading PNG data
 ```
 
 Pointer
@@ -1449,24 +1747,24 @@ Open up `CLLocationCoordinate2D` to provide handy-dandies
 ```ruby
 # distances
 
-> denver_co = CLLocationCoordinate2D.new(39.739188,-104.985223)
+> denver_co = CLLocationCoordinate2D.new(39.739188, -104.985223)
 => #<CLLocationCoordinate2D latitude=39.7391815185547 longitude=-104.985198974609>
-> loveland_oh = CLLocationCoordinate2D.new(39.268128,-84.257648)
+> loveland_oh = CLLocationCoordinate2D.new(39.268128, -84.257648)
 => #<CLLocationCoordinate2D latitude=39.2681274414062 longitude=-84.2576293945312>
 > denver_co.distance_to(loveland_oh)
-=> 1773425.54893302  # in meters
+=> 1779547.32010451  # in meters
 > denver_co.distance_to(loveland_oh).in_miles
-=> 1101.95556640625
+=> 1105.75943993609
 
 # move around the globe using x/y distances in miles or kilometers
 > denver_co.delta_miles(1101.6, -32.556)
-=> #<CLLocationCoordinate2D latitude=39.2681427001953 longitude=-84.2577209472656>
+=> #<CLLocationCoordinate2D latitude=39.2685263870498 longitude=-84.2744401887072>
 # our location is pretty close!
-> denver_co.delta_miles(1101.6, -32.556).distance_to(loveland_oh).miles
-=> 0.90043306350708
+> denver_co.delta_miles(1101.6, -32.556).distance_to(loveland_oh).in_miles
+=> 0.900871117223827
 
 > denver_co.delta_kilometers(10, 10)  # 10 kilometers east, 10 kilometers north
-=> #<CLLocationCoordinate2D latitude=39.8290100097656 longitude=-104.868377685547>
+=> #<CLLocationCoordinate2D latitude=39.8290195284119 longitude=-104.868401269013>
 ```
 
 Pipes
@@ -1587,12 +1885,9 @@ Contributions
 If you want to see new features, please fork, commit, and pull-request! :smiley:
 
 [BubbleWrap]: https://github.com/rubymotion/BubbleWrap
-[sweettea]: https://github.com/colinta/sweettea
-[teacup]: https://github.com/rubymotion/teacup
 [nsnulldammit]: https://github.com/colinta/nsnulldammit
 [geomotion]: https://github.com/clayallsopp/geomotion
 
-[Fusionbox]: http://www.fusionbox.com/
-[fusionbox announcement]: http://fusionbox.org/projects/rubymotion-sugarcube/
 [Clay Allsopp]: https://github.com/clayallsopp
 [Thom Parkin]: https://github.com/ParkinT
+[colinta]: https://github.com/colinta

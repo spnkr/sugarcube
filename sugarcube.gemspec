@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../lib/sugarcube/version.rb', __FILE__)
+require File.expand_path('../lib/version.rb', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.name          = 'sugarcube'
   gem.version       = SugarCube::Version
-  gem.licenses      = ['BSD']
+  gem.licenses      = ['MIT']
 
-  gem.authors = ['Colin T.A. Gray', 'Thom Parkin', 'Katsuyoshi Ito', 'Michael Erasmus']
-  gem.email   = ['colinta@gmail.com']
+  gem.authors = ['Colin T.A. Gray', 'Katsuyoshi Ito', 'Thom Parkin', 'Michael Erasmus', 'Mark Rickert']
+  gem.email   = ['colin@hipbyte.com', 'mjar81@gmail.com']
   gem.summary     = %{Extensions for Ruby to make Rubymotion development more enjoyable, and hopefully more rubyesque!}
   gem.description = <<-DESC
 == Description
@@ -18,16 +18,16 @@ base classes (String, Fixnum, Float).  With sugarcube, you can create a
 color from an integer or symbol, or create a UIFont or UIImage from a
 string.
 
-Some UI classes are opened up as well, like adding the <tt><<</tt> operator to a
-<tt>UIView</tt> instance, instead of <tt>view.addSubview(subview)</tt>, you can
-use the more idiomatic: <tt>view << subview</tt>.
+Some UI classes are opened up as well, like adding the `<<`` operator to a
+`UIView` instance, instead of `view.addSubview(subview)`, you can use the more
+idiomatic: `view << subview`.
 DESC
 
   gem.homepage    = 'https://github.com/rubymotion/sugarcube'
 
-  gem.files        = `git ls-files`.split($\)
-  gem.executables  = gem.files.grep(%r{^bin/}).map { |f| File.basename(f) }
-  gem.test_files   = gem.files.grep(%r{^spec/})
+  gem.files       = Dir.glob('lib/**/*.rb')
+  gem.files      << 'README.md'
+  gem.test_files  = Dir.glob('spec/**/*.rb')
 
   gem.require_paths = ['lib']
 end

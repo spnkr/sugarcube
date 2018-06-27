@@ -3,13 +3,13 @@ unless defined?(Motion::Project::Config)
 end
 
 
-Motion::Project::App.setup do |app|
-  # scans app.files until it finds app/ (the default)
-  # if found, it inserts just before those files, otherwise it will insert to
-  # the end of the list
-  insert_point = app.files.find_index { |file| file =~ /^(?:\.\/)?app\// } || 0
+require 'sugarcube'
+if SugarCube.cocoa?
+  require 'sugarcube-coregraphics'
+end
 
-  Dir.glob(File.join(File.dirname(__FILE__), 'sugarcube-repl/**/*.rb')).reverse.each do |file|
-    app.files.insert(insert_point, file)
+Motion::Project::App.pre_setup do |app|
+  app.development do
+    SugarCube.add_app_files(app, 'sugarcube-repl')
   end
 end

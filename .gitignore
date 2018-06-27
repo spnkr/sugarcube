@@ -3,3 +3,5 @@ pkg/
 .DS_Store
 /build/
 .idea/
+.repl_history
+Gemfile.lock
