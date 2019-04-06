@@ -560,8 +560,6 @@ class UIView
     end
   end
 
-<<<<<<< HEAD:lib/sugarcube-animations/uiview.rb
-
   # Applies perspective transforms to a view
   # 
   # Simple example
@@ -591,7 +589,7 @@ class UIView
       p = args[:amount] || [0,0.0004]
       completion = args[:completion] || nil
       UIView.animateWithDuration(duration, delay:0, options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseInOut, animations: lambda{vw.layer.transform = CATransform3D.identity.scale(scale).perspective(p[0],p[1])}, completion:completion)
-=======
+
   # and this "SuperGoodDeleteWiggle" is an aptly named animation care
   # of mxcl (of PromiseKit, YOLOKit, and if he used RubyMotion I'm 99%
   # sure he would be using SugarCube - see his "initWith...F**It' repo
